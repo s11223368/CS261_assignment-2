@@ -33,7 +33,7 @@ void stack_from_queues_free(struct stack_from_queues* stack) {
 }
 
 /*
- * This function should return 0 if a stack is completely empty or 1 if there
+ * This function should return 1 if a stack is completely empty or 0 if there
  * is at least one element stored in the stack.
  *
  * Params:
