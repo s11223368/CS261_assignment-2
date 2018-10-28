@@ -8,6 +8,7 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "stack.h"
 #include "queue_from_stacks.h"
@@ -17,7 +18,10 @@
  * your queue and return a pointer to the queue structure.
  */
 struct queue_from_stacks* queue_from_stacks_create() {
-  return NULL;
+  struct queue_from_stacks* sta = malloc(sizeof(struct queue_from_stacks));
+  sta->s1 = stack_create();
+  sta->s2 = stack_create();
+  return sta ;
 }
 
 /*
@@ -29,11 +33,13 @@ struct queue_from_stacks* queue_from_stacks_create() {
  *     exit the program with an error if queue is NULL.
  */
 void queue_from_stacks_free(struct queue_from_stacks* queue) {
-
+  stack_free(queue->s1);
+  stack_free(queue->s2);
+  free(queue);
 }
 
 /*
- * This function should return 1 if a queue is completely empty or 0 if there
+ * This function should return 0 if a queue is completely empty or 1 if there
  * is at least one element stored in the queue.
  *
  * Params:
@@ -44,7 +50,10 @@ void queue_from_stacks_free(struct queue_from_stacks* queue) {
  *   Should return 1 if the queue is empty or 0 otherwise.
  */
 int queue_from_stacks_isempty(struct queue_from_stacks* queue) {
-  return 1;
+  int tes1 = stack_isempty(queue->s1);
+  int tes2 = stack_isempty(queue->s2);
+  if(tes1&&tes2) return 1;
+  else return 0;
 }
 
 /*
@@ -56,7 +65,7 @@ int queue_from_stacks_isempty(struct queue_from_stacks* queue) {
  *   value - the new value to be enqueueed onto the queue
  */
 void queue_from_stacks_enqueue(struct queue_from_stacks* queue, int value) {
-
+  stack_push(queue->s1, value);
 }
 
 /*
@@ -72,8 +81,14 @@ void queue_from_stacks_enqueue(struct queue_from_stacks* queue, int value) {
  *   Should return the value stored at the front of the queue.
  */
 int queue_from_stacks_front(struct queue_from_stacks* queue) {
-  return 0;
-}
+  if( stack_isempty(queue->s2) && ( stack_isempty(queue->s1)==0 )){
+    while( !stack_isempty(queue->s1) ){
+    stack_push(queue->s2, stack_pop(queue->s1));
+    }
+  }
+
+  return stack_top(queue->s2);
+  }
 
 /*
  * Should remove the front element from a queue and return its value.
@@ -88,5 +103,9 @@ int queue_from_stacks_front(struct queue_from_stacks* queue) {
  *   is dequeued.
  */
 int queue_from_stacks_dequeue(struct queue_from_stacks* queue) {
-  return 0;
+  if(stack_isempty(queue->s2)!=1){
+  
+  return stack_pop(queue->s2);
+  }
+  else return 0;
 }
